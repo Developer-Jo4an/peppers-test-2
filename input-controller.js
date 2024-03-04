@@ -88,7 +88,6 @@ export class InputController {
         }
     }
 
-
     createActionEvent(keyAction, customEventName, keyCode) {
         this.toggleKey(keyAction, keyCode)
 
@@ -110,7 +109,10 @@ export class InputController {
     keyUpHandler(e) { this.createActionEvent(this.KEY_REMOVE, this.ACTION_DEACTIVATED, e.keyCode) }
 
     attach(target, dontEnabled) {
-        if (dontEnabled) return
+        if (dontEnabled) {
+            console.log('dont enabled: true')
+            return
+        }
 
         this.$target = target
 
@@ -119,7 +121,9 @@ export class InputController {
 			this.$target.addEventListener('keyup', this.keyUpHandler.bind(this))
             this.$target.addEventListener('focus', this.focusOnEvent.bind(this))
             this.$target.addEventListener('blur', this.focusOffEvent.bind(this))
-		}
+
+            console.log('attach complete')
+        }
 	}
 
     detach() {
@@ -130,11 +134,19 @@ export class InputController {
 
         this.$target = null
         this.enabled = false
+
+        console.log('detach complete')
     }
 
-    focusOnEvent() { this.focused = true }
+    focusOnEvent() {
+        this.focused = true
+        console.log(`focused: ${this.focused}`)
+    }
 
-    focusOffEvent() { this.focused = false }
+    focusOffEvent() {
+        this.focused = false
+        console.log(`focused: ${this.focused}`)
+    }
 
     isActionActive(actionName) { return actionName === this.activeAction }
 
