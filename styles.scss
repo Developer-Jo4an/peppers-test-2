@@ -5,108 +5,77 @@
     text-decoration: none;
     font-size: 16px;
 }
+
 body {
-    background-image: url("/assets/background.jpg");
+    background-image: url("./assets/background.jpg");
 }
 
-// square
 .square {
     width: 200px;
     height: 200px;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     color: #fff;
     font-size: 24px;
-
     position: absolute;
-
-    transition: .3s;
-
-    background: url("/assets/car.png") no-repeat center;
+    transition: 0.3s;
+    background: url("./assets/mavic.png") no-repeat center;
 }
-
-// console
 
 .buttons-wrapper {
     position: absolute;
     bottom: 20px;
     left: 20px;
-
     display: flex;
     align-items: center;
     gap: 20px;
-
     padding: 20px;
-
     border-radius: 20px;
-
     border: 2px solid violet;
-
     background-color: #fff;
 }
 
 .square-logic-btn {
     padding: 10px;
     border-radius: 10px;
-
     font-weight: 600;
-
     color: violet;
-
     cursor: pointer;
-
     background-color: #fff;
-
-    transition: .3s;
-
+    transition: 0.3s;
     border: 2px solid violet;
-
-    &:hover {
-        background-color: violet;
-
-        color: #fff;
-    }
+}
+.square-logic-btn:hover {
+    background-color: violet;
+    color: #fff;
 }
 
 .between-line {
     align-self: stretch;
     width: 3px;
-
     border-radius: 3px;
-
     background-color: violet;
 }
-
- // speed controller
 
 .speed-controller {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
-
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-
     padding: 20px;
-
     border-radius: 20px;
-
     border: 2px solid violet;
-
     background-color: #fff;
 }
 
 .speed-value {
     font-size: 24px;
-
     color: violet;
-
     font-weight: 900;
 }
 
@@ -116,19 +85,14 @@ body {
     gap: 20px;
 }
 
-//
 .description-section {
     display: flex;
     flex-direction: column;
     gap: 10px;
-
     padding: 20px;
-
     border-radius: 20px;
     border: 2px solid violet;
-
     background-color: #fff;
-
     position: absolute;
     bottom: 143px;
     left: 20px;
@@ -143,7 +107,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-
     padding-left: 20px;
 }
 
@@ -151,3 +114,5 @@ body {
     color: violet;
     font-size: 20px;
 }
+
+/*# sourceMappingURL=styles.css.map */

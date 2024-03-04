@@ -9,39 +9,39 @@
     <title>Peppers</title>
 </head>
 <body>
-    <div style="left: 0; top: 0; background-size: 55% 75%; transform: rotate(0deg)" class="square"></div>
-    <div class="buttons-wrapper">
-        <!--Кнопки логически связанные с enable/disable controller-->
-        <button id="enable-btn" class="square-logic-btn">Enable</button>
-        <button id="disable-btn" class="square-logic-btn">Disable</button>
-        <div class="between-line"></div>
-        <!--Кнопки логически связанные с attach/detach-->
-        <button id="attach-btn" class="square-logic-btn">Attach</button>
-        <button id="detach-btn" class="square-logic-btn">Detach</button>
-        <button id="dont-enabled-btn" class="square-logic-btn">Dont Enabled: <span></span></button>
-        <div class="between-line"></div>
-        <!--Кнопки логически связанные с добавлением экшенов-->
-        <button id="add-actions-btn" class="square-logic-btn">Add actions</button>
-        <button id="add-bounce-btn" class="square-logic-btn">Add Bounce</button>
-        <div class="between-line"></div>
-        <!--Кнопки логически связанные с активацией тех или иных экшенов-->
-        <button id="enable-up-btn" class="square-logic-btn">Enable Up: <span></span></button>
-        <button id="enable-down-btn" class="square-logic-btn">Enable Down: <span></span></button>
-        <button id="enable-left-btn" class="square-logic-btn">Enable Left: <span></span></button>
-        <button id="enable-right-btn" class="square-logic-btn">Enable Right: <span></span></button>
-        <button id="enable-bounce-btn" class="square-logic-btn">Enable Bounce: <span></span></button>
-    </div>
-    <div class="description-section">
-        <p class="description-explanations">Для того, чтобы машинка начала ездить:</p>
-        <ul class="description-actions-list">
-            <li class="description-item">Добавить экшены(add actions, add bounce)</li>
-            <li class="description-item">don't enabled поставить в значение false, иначе attach не сработает</li>
-            <li class="description-item">Attach (навесить слушатели)</li>
-            <li class="description-item">Enable Какие то активности(up, down, left, right, bounce)</li>
-        </ul>
-        <p class="description-explanations">Порядок любой, кроме того, что активировать экшн, если он не добавлен в контроллер нельзя, так как его нету в контроллере</p>
-    </div>
+<div style="left: 0; top: 0; background-size: 55% 75%" class="square"></div>
+<div class="buttons-wrapper">
+    <!--Кнопки логически связанные с enable/disable controller-->
+    <button id="enable-btn" class="square-logic-btn">Enable</button>
+    <button id="disable-btn" class="square-logic-btn">Disable</button>
+    <div class="between-line"></div>
+    <!--Кнопки логически связанные с attach/detach-->
+    <button id="attach-btn" class="square-logic-btn">Attach</button>
+    <button id="detach-btn" class="square-logic-btn">Detach</button>
+    <button id="dont-enabled-btn" class="square-logic-btn">Dont Enabled: <span></span></button>
+    <div class="between-line"></div>
+    <!--Кнопки логически связанные с добавлением экшенов-->
+    <button id="add-actions-btn" class="square-logic-btn">Add actions</button>
+    <button id="add-bounce-btn" class="square-logic-btn">Add Bounce</button>
+    <div class="between-line"></div>
+    <!--Кнопки логически связанные с активацией тех или иных экшенов-->
+    <button id="enable-up-btn" class="square-logic-btn">Enable Up: <span></span></button>
+    <button id="enable-down-btn" class="square-logic-btn">Enable Down: <span></span></button>
+    <button id="enable-left-btn" class="square-logic-btn">Enable Left: <span></span></button>
+    <button id="enable-right-btn" class="square-logic-btn">Enable Right: <span></span></button>
+    <button id="enable-bounce-btn" class="square-logic-btn">Enable Bounce: <span></span></button>
+</div>
+<div class="description-section">
+    <p class="description-explanations">Для того, чтобы машинка начала ездить:</p>
+    <ul class="description-actions-list">
+        <li class="description-item">Добавить экшены(add actions, add bounce)</li>
+        <li class="description-item">don't enabled поставить в значение false, иначе attach не сработает</li>
+        <li class="description-item">Attach (навесить слушатели)</li>
+        <li class="description-item">Enable Какие то активности(up, down, left, right, bounce)</li>
+    </ul>
+    <p class="description-explanations">Порядок любой, кроме того, что активировать экшн, если он не добавлен в контроллер нельзя, так как его нету в контроллере</p>
+</div>
 
-    <script src="input-controller-test.js" type="module"></script>
+<script src="input-controller-test.js" type="module"></script>
 </body>
 </html>

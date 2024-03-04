@@ -46,14 +46,13 @@ const controllerLogic = () => {
         }
     }
 
-
     // All actions object
-	const actionsObject = {
+    const actionsObject = {
         up: new Action('up', [87, 38], false, enableUpBtn),
         down: new Action('down', [83, 40], false, enableDownBtn),
-		left: new Action('left', [65, 37], false, enableLeftBtn),
-		right: new Action('right', [68, 39], false, enableRightBtn)
-	}
+        left: new Action('left', [65, 37], false, enableLeftBtn),
+        right: new Action('right', [68, 39], false, enableRightBtn)
+    }
 
     // Bounce Action object
     const bounceActionObject = { bounce: new Action('bounce', [32], false, enableBounceBtn) }
@@ -67,33 +66,33 @@ const controllerLogic = () => {
     const delPostfix = str => str.slice(0, str.length - 2)
 
     const moveReducer = ({ detail }) => {
-        switch (detail.actionName) {
-            case actionsObject.up.name: {
-				square.style.top = `${+delPostfix(square.style.top) - 10}px`
-	            square.style.transform = 'rotate(360deg)'
-				break
-			}
-            case actionsObject.down.name: {
-				square.style.top = `${+delPostfix(square.style.top) + 10}px`
-	            square.style.transform = 'rotate(180deg)'
-	            break
-			}
-            case actionsObject.left.name: {
-				square.style.left = `${+delPostfix(square.style.left) - 10}px`
-	            square.style.transform = 'rotate(270deg)'
-				break
+        const { actions } = detail
+        console.log(actions)
+        actions.forEach(action => {
+            switch (action) {
+                case actionsObject.up.name: {
+                    square.style.top = `${+delPostfix(square.style.top) - 3}px`
+                    break
+                }
+                case actionsObject.down.name: {
+                    square.style.top = `${+delPostfix(square.style.top) + 3}px`
+                    break
+                }
+                case actionsObject.left.name: {
+                    square.style.left = `${+delPostfix(square.style.left) - 3}px`
+                    break
+                }
+                case actionsObject.right.name: {
+                    square.style.left = `${+delPostfix(square.style.left) + 3}px`
+                    break
+                }
+                case bounceActionObject.bounce.name: {
+                    square.style.backgroundSize = '75% 95%'
+                    setTimeout(() => square.style.backgroundSize = '55% 75%', 300)
+                    break
+                }
             }
-            case actionsObject.right.name: {
-				square.style.left = `${+delPostfix(square.style.left) + 10}px`
-	            square.style.transform = 'rotate(-270deg)'
-	            break
-            }
-            case bounceActionObject.bounce.name: {
-				square.style.backgroundSize = '75% 95%'
-	            setTimeout(() => square.style.backgroundSize = '55% 75%', 300)
-	            break
-			}
-        }
+        })
     }
 
     // enable / disable controller
@@ -117,7 +116,7 @@ const controllerLogic = () => {
     enabledAttachObj.setEnabled()
     enabledAttachObj.btns.dontEnabledBtn.addEventListener('click', enabledAttachObj.setEnabled.bind(enabledAttachObj))
 
-    const actionDeactivatedEvent = e => console.log(`Событие ${e.detail.actionName} закончилось!`)
+    const actionDeactivatedEvent = e => console.log(e.detail.actions)
 
     enabledAttachObj.btns.attachBtn.addEventListener('click', () => {
         if (controller.$target !== window) {
@@ -170,14 +169,14 @@ const controllerLogic = () => {
         $btn.addEventListener('click', () => toggleEnableAction($btn, name))
     })
 
-    // Testing
+    //Testing
     // const updateAction = () => {
-    //     console.log('Идет ли экшн up:', controller.isActionActive('bounce'))
+    //     console.log('Идет ли экшн up:', controller.isActionActive('up'))
     //     requestAnimationFrame(updateAction)
     // }; updateAction()
     //
     // const updateKey = () => {
-    //     console.log('Нажата ли кнопка 87(W):', controller.isKeyPressed(32))
+    //     console.log('Нажата ли кнопка 87(W):', controller.isKeyPressed(87))
     //     requestAnimationFrame(updateKey)
     // }; updateKey()
 }
