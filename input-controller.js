@@ -123,10 +123,10 @@ export class InputController {
 	}
 
     detach() {
-        this.$target.removeEventListener('keydown', this.keyDownHandler.bind(this))
-        this.$target.removeEventListener('keyup', this.keyUpHandler.bind(this))
-        this.$target.removeEventListener('focus', this.focusOnEvent.bind(this))
-        this.$target.removeEventListener('blur', this.focusOffEvent.bind(this))
+        this.$target.removeEventListener('keydown', this.keyDownHandler)
+        this.$target.removeEventListener('keyup', this.keyUpHandler)
+        this.$target.removeEventListener('focus', this.focusOnEvent)
+        this.$target.removeEventListener('blur', this.focusOffEvent)
 
         this.$target = null
         this.enabled = false
