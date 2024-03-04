@@ -50,8 +50,8 @@ const controllerLogic = () => {
     const actionsObject = {
         up: new Action('up', [87, 38], false, enableUpBtn),
         down: new Action('down', [83, 40, 87], false, enableDownBtn),
-        left: new Action('left', [65, 37, 87], false, enableLeftBtn),
-        right: new Action('right', [68, 39, 87], false, enableRightBtn)
+        left: new Action('left', [65, 37], false, enableLeftBtn),
+        right: new Action('right', [68, 39], false, enableRightBtn)
     }
 
     // Bounce Action object
@@ -169,7 +169,7 @@ const controllerLogic = () => {
         $btn.addEventListener('click', () => toggleEnableAction($btn, name))
     })
 
-    //Testing
+    // Testing
     // const updateAction = () => {
     //     console.log('Идет ли экшн up:', controller.isActionActive('up'))
     //     requestAnimationFrame(updateAction)

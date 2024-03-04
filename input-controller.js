@@ -26,7 +26,7 @@ export class InputController {
 
     enableController() { this.enabled = true }
 
-    disableController() { this.enabled = false }
+    disableController() { this.enabled = false; this.actions = [] }
 
     enableAction(actionName) { this.actions[actionName] ? this.actions[actionName].enabled = true : null }
 
@@ -138,7 +138,7 @@ export class InputController {
         this.enabled = false
     }
 
-    isActionActive(actionName) { return this.enabled && this.focused ? this.activeActions.includes(actionName) : '' }
+    isActionActive(actionName) { return this.activeActions.includes(actionName) }
 
-    isKeyPressed(keyCode) { return this.enabled && this.focused ? this.activeKeys.includes(keyCode) : '' }
+    isKeyPressed(keyCode) { return  this.activeKeys.includes(keyCode) }
 }
