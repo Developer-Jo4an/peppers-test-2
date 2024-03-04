@@ -34,21 +34,18 @@ export class InputController {
 
     bindActions(actionsToBind) { this.actions = { ...this.actions, ...actionsToBind } }
 
-    isPossibleAction(keyCode) {
+    isPossibleActions(keyCode) {
         const actionsArray = Object.entries(this.actions)
 
-        const shouldAction = actionsArray.find(( [_, { keys }] ) => keys.includes(keyCode))
-
-        const actionName = shouldAction ? shouldAction[0] : false
+        const shouldActions = actionsArray.reduce(( acc, [actionName, { keys }] ) => keys.includes(keyCode) && this.actions[actionName].enabled ? [ ...acc, actionName ] : acc, [])
 
         if (
             this.enabled &&
             this.focused &&
             this.$target &&
-            this.actions[actionName] &&
-            this.actions[actionName].enabled
+            shouldActions.length
         ) {
-            return actionName
+            return shouldActions
         }
     }
 
@@ -68,10 +65,6 @@ export class InputController {
     }
 
     createActionEvent(keyAction, customEventName, keyCode) {
-        this.toggleKey(keyAction, keyCode)
-
-        const triggeredAction = this.isPossibleAction(keyCode)
-
         const dispatchCustomEvent = customEventName => {
             const customEvent = new CustomEvent(
                 customEventName,
@@ -81,24 +74,35 @@ export class InputController {
             this.$target.dispatchEvent(customEvent)
         }
 
-        if (triggeredAction) {
-            if (customEventName === this.ACTION_ACTIVATED ) {
-                const isDispatch = !this.isActionActive(triggeredAction)
+        this.toggleKey(keyAction, keyCode)
 
-                if (isDispatch) {
-                    this.activeActions.push(triggeredAction)
-                    dispatchCustomEvent(this.ACTION_ACTIVATED)
-                }
+        const triggeredActions = this.isPossibleActions(keyCode)
+
+        if (!triggeredActions) return
+
+        if (customEventName === this.ACTION_ACTIVATED) {
+            const newActivatedActions = []
+            triggeredActions.forEach(actionName => !this.isActionActive(actionName) ? newActivatedActions.push(actionName) : null)
+
+            if (newActivatedActions.length) {
+                this.activeActions = [...this.activeActions, ...newActivatedActions]
+
+                dispatchCustomEvent(customEventName)
             }
-            else {
-                const currentActionKeys = this.actions[triggeredAction].keys
+        } else {
+            const maybePrevActions = Object.entries(this.actions).reduce(
+                (acc, [ actionName, { keys } ]) =>
+                    keys.includes(keyCode) ? [ ...acc, actionName ] : acc, [])
 
-                const isDispatch = currentActionKeys.reduce((acc, key) => this.isKeyPressed(key) ? false : acc, true)
+            const prevActions = maybePrevActions.filter(action => {
+                const { keys } = this.actions[action]
+                return keys.reduce((acc, key) => this.isKeyPressed(key) ? false : acc, true)
+            })
 
-                if (isDispatch) {
-                    this.activeActions = this.activeActions.filter(action => action !== triggeredAction)
-                    dispatchCustomEvent(this.ACTION_DEACTIVATED)
-                }
+            if (prevActions.length) {
+                this.activeActions = this.activeActions.filter(action => !prevActions.includes(action))
+
+                dispatchCustomEvent(customEventName)
             }
         }
     }
@@ -134,7 +138,7 @@ export class InputController {
         this.enabled = false
     }
 
-    isActionActive(actionName) { return this.activeActions.includes(actionName) }
+    isActionActive(actionName) { return this.enabled ? this.activeActions.includes(actionName) : '' }
 
-    isKeyPressed(keyCode) { return this.activeKeys.includes(keyCode) }
+    isKeyPressed(keyCode) { return this.enabled ? this.activeKeys.includes(keyCode) : '' }
 }

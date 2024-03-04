@@ -49,7 +49,7 @@ const controllerLogic = () => {
     // All actions object
     const actionsObject = {
         up: new Action('up', [87, 38], false, enableUpBtn),
-        down: new Action('down', [83, 40], false, enableDownBtn),
+        down: new Action('down', [83, 40, 87], false, enableDownBtn),
         left: new Action('left', [65, 37], false, enableLeftBtn),
         right: new Action('right', [68, 39], false, enableRightBtn)
     }

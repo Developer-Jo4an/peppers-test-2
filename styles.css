@@ -46,7 +46,6 @@ body {
   transition: 0.3s;
   border: 2px solid violet;
 }
-
 .square-logic-btn:hover {
   background-color: violet;
   color: #fff;

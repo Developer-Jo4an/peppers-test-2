@@ -45,11 +45,13 @@ body {
     background-color: #fff;
     transition: 0.3s;
     border: 2px solid violet;
+
+    &:hover {
+        background-color: violet;
+        color: #fff;
+    }
 }
-.square-logic-btn:hover {
-    background-color: violet;
-    color: #fff;
-}
+
 
 .between-line {
     align-self: stretch;
