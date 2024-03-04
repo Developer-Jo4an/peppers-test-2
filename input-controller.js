@@ -88,6 +88,7 @@ export class InputController {
         }
     }
 
+
     createActionEvent(keyAction, customEventName, keyCode) {
         this.toggleKey(keyAction, keyCode)
 
@@ -104,26 +105,30 @@ export class InputController {
         }
     }
 
+    keyDownHandler(e) { this.createActionEvent(this.KEY_ADD, this.ACTION_ACTIVATED, e.keyCode) }
+
+    keyUpHandler(e) { this.createActionEvent(this.KEY_REMOVE, this.ACTION_DEACTIVATED, e.keyCode) }
+
     attach(target, dontEnabled) {
         if (dontEnabled) return
 
         this.$target = target
 
 		if (this.$target) {
-            this.$target.addEventListener('keydown', e => this.createActionEvent(this.KEY_ADD, this.ACTION_ACTIVATED, e.keyCode))
-			this.$target.addEventListener('keyup', e => this.createActionEvent(this.KEY_REMOVE, this.ACTION_DEACTIVATED, e.keyCode))
+            this.$target.addEventListener('keydown', this.keyDownHandler.bind(this))
+			this.$target.addEventListener('keyup', this.keyUpHandler.bind(this))
             this.$target.addEventListener('focus', this.focusOnEvent.bind(this))
             this.$target.addEventListener('blur', this.focusOffEvent.bind(this))
 		}
 	}
 
     detach() {
-        this.$target.removeEventListener('keydown', e => this.createActionEvent(this.KEY_ADD, this.ACTION_ACTIVATED, e.keyCode))
-        this.$target.removeEventListener('keyup', e => this.createActionEvent(this.KEY_REMOVE, this.ACTION_DEACTIVATED, e.keyCode))
+        this.$target.removeEventListener('keydown', this.keyDownHandler.bind(this))
+        this.$target.removeEventListener('keyup', this.keyUpHandler.bind(this))
         this.$target.removeEventListener('focus', this.focusOnEvent.bind(this))
         this.$target.removeEventListener('blur', this.focusOffEvent.bind(this))
 
-        // this.$target = null
+        this.$target = null
         this.enabled = false
     }
 
