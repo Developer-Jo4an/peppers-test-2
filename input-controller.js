@@ -26,7 +26,7 @@ export class InputController {
 
     enableController() { this.enabled = true }
 
-    disableController() { this.enabled = false; this.actions = [] }
+    disableController() { this.enabled = false; this.activeActions = [] }
 
     enableAction(actionName) { this.actions[actionName] ? this.actions[actionName].enabled = true : null }
 
