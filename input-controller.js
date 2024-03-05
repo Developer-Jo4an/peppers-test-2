@@ -5,24 +5,19 @@ export class InputController {
 
     activeActions = []
 
+    activeActionsHide = {}
+
     ACTION_ACTIVATED = 'input-controller:action-activated'
 
     ACTION_DEACTIVATED = 'input-controller:action-deactivated'
 
-    activeKeys = []
-
-    KEY_ADD = 'input-controller:key-added'
-
-    KEY_REMOVE = 'input-controller:key-removed'
-
-    constructor(actionsToBind = {}, target = null) {
-        this.keyDownHandler = this.keyDownHandler.bind(this)
-        this.keyUpHandler = this.keyUpHandler.bind(this)
+    constructor(actionsToBind = {}, target = null, plugins = {}) {
         this.focusOnHandler = this.focusOnHandler.bind(this)
         this.focusOffHandler = this.focusOffHandler.bind(this)
 
         this.actions = actionsToBind
         this.$target = target
+        this.plugins = plugins
     }
 
     enableController() { this.enabled = true }
@@ -35,111 +30,86 @@ export class InputController {
 
     bindActions(actionsToBind) { this.actions = { ...this.actions, ...actionsToBind } }
 
-    isPossibleActions(keyCode) {
+    focusOnHandler() { this.focused = true }
+
+    focusOffHandler() { this.focused = false }
+
+    registerPlugin(pluginObject) {
+        const { type, plugin } = pluginObject
+
+        if (this.plugins[type]) return
+
+        this.plugins[type] = plugin
+    }
+
+    removePlugin(pluginType) {
+        if (!this.plugins[pluginType]) return
+
+        if (this.$target) this.plugins[pluginType].detachPlugin()
+
+        delete this.plugins[pluginType]
+    }
+
+    dispatchCustomEvent(customEventName) {
+        const customEvent = new CustomEvent(
+            customEventName,
+            { detail: { actions: this.activeActions } }
+        )
+
+        this.$target.dispatchEvent(customEvent)
+    }
+
+    isTriggeredActions(field, code) {
         const actionsArray = Object.entries(this.actions)
 
         const shouldActions = actionsArray.reduce(
-            ( acc, [actionName, { keys }] ) => keys.includes(keyCode) && this.actions[actionName].enabled ? [ ...acc, actionName ] : acc, [])
+            ( acc, [actionName, action] ) =>
+                action[field].includes(code) && this.actions[actionName].enabled ?
+                    [ ...acc, actionName ]
+                    :
+                    acc,
+            [])
+
 
         if (
             this.enabled &&
             this.focused &&
-            this.$target &&
             shouldActions.length
         ) {
             return shouldActions
         }
     }
 
-    toggleKey(action, keyCode) {
-        const isControllerHaveKey = this.activeKeys.includes(keyCode)
+    detach() {
+        if (this.$target) {
+            for (const plugin in this.plugins) { this.plugins[plugin].detachPlugin() }
+            this.plugins = {}
 
-        switch (action) {
-            case this.KEY_ADD : {
-                !isControllerHaveKey ? this.activeKeys.push(keyCode) : null
-                break
-            }
-            case this.KEY_REMOVE : {
-                isControllerHaveKey ? this.activeKeys = this.activeKeys.filter(key => keyCode !== key) : null
-                break
-            }
+            this.$target.removeEventListener('focus', this.focusOnHandler)
+            this.$target.removeEventListener('blur', this.focusOffHandler)
+
+            this.$target = null
         }
+
+        this.enabled = false
     }
-
-    createActionEvent(keyAction, customEventName, keyCode) {
-        const dispatchCustomEvent = customEventName => {
-            const customEvent = new CustomEvent(
-                customEventName,
-                { detail: { actions: this.activeActions } }
-            )
-
-            this.$target.dispatchEvent(customEvent)
-        }
-
-        this.toggleKey(keyAction, keyCode)
-
-        const triggeredActions = this.isPossibleActions(keyCode)
-
-        if (!triggeredActions) return
-
-        if (customEventName === this.ACTION_ACTIVATED) {
-            const newActivatedActions = triggeredActions.reduce((acc, actionName) => !this.isActionActive(actionName) ? [...acc, actionName] : acc, [])
-
-            if (newActivatedActions.length) {
-                this.activeActions = [...this.activeActions, ...newActivatedActions]
-
-                dispatchCustomEvent(customEventName)
-            }
-        } else {
-            const maybePrevActions = Object.entries(this.actions).reduce(
-                (acc, [ actionName, { keys } ]) =>
-                    keys.includes(keyCode) ? [ ...acc, actionName ] : acc, [])
-
-            const prevActions = maybePrevActions.filter(action => {
-                const { keys } = this.actions[action]
-                return keys.reduce((acc, key) => this.isKeyPressed(key) ? false : acc, true)
-            })
-
-            if (prevActions.length) {
-                this.activeActions = this.activeActions.filter(action => !prevActions.includes(action))
-
-                dispatchCustomEvent(customEventName)
-            }
-        }
-    }
-
-    keyDownHandler(e) { this.createActionEvent(this.KEY_ADD, this.ACTION_ACTIVATED, e.keyCode) }
-
-    keyUpHandler(e) { this.createActionEvent(this.KEY_REMOVE, this.ACTION_DEACTIVATED, e.keyCode) }
-
-    focusOnHandler() { this.focused = true }
-
-    focusOffHandler() { this.focused = false }
 
     attach(target, dontEnabled) {
         if (dontEnabled) return
 
+        if (this.$target !== target) { this.detach(); this.enabled = true }
+
         this.$target = target
 
         if (this.$target) {
-            this.$target.addEventListener('keydown', this.keyDownHandler)
-            this.$target.addEventListener('keyup', this.keyUpHandler)
+            for (const plugin in this.plugins) {
+                this.plugins[plugin].attachPlugin()
+            }
+
             this.$target.addEventListener('focus', this.focusOnHandler)
             this.$target.addEventListener('blur', this.focusOffHandler)
         }
     }
 
-    detach() {
-        this.$target.removeEventListener('keydown', this.keyDownHandler)
-        this.$target.removeEventListener('keyup', this.keyUpHandler)
-        this.$target.removeEventListener('focus', this.focusOnHandler)
-        this.$target.removeEventListener('blur', this.focusOffHandler)
-
-        this.$target = null
-        this.enabled = false
-    }
-
     isActionActive(actionName) { return this.activeActions.includes(actionName) }
-
-    isKeyPressed(keyCode) { return this.activeKeys.includes(keyCode) }
 }

@@ -1,4 +1,6 @@
 import { InputController } from "./input-controller.js"
+import { KeyboardPlugin } from './plugins/KeyboardPlugin.js'
+import { MousePlugin } from './plugins/MousePlugin.js'
 
 const controllerLogic = () => {
     // main node
@@ -22,15 +24,22 @@ const controllerLogic = () => {
     const enableLeftBtn = document.querySelector('#enable-left-btn')
     const enableRightBtn = document.querySelector('#enable-right-btn')
     const enableBounceBtn = document.querySelector('#enable-bounce-btn')
+    // Plugins
+    const addKeyboardPluginBtn = document.querySelector('#add-keyboard-plugin')
+    const removeKeyboardPluginBtn = document.querySelector('#remove-keyboard-plugin')
+    const addMousePluginBtn = document.querySelector('#add-mouse-plugin')
+    const removeMousePluginBtn = document.querySelector('#remove-mouse-plugin')
 
     // Actions class
     class Action {
-        constructor(name, keys, enabled, btn) {
+        constructor(name, keys, mouses, enabled, btn) {
             this.name = name
             this.keys = keys
+            this.buttons = mouses
             this.enabled = enabled
             this.$btn = btn
         }
+
         setEnabled(enabled) {
             this.enabled = enabled
             this.$btn.firstElementChild.innerHTML = enabled.toString()
@@ -39,6 +48,7 @@ const controllerLogic = () => {
         getControllerAction() {
             return {
                 [this.name]: {
+                    buttons: this.buttons,
                     keys: this.keys,
                     enabled: this.enabled
                 }
@@ -48,17 +58,19 @@ const controllerLogic = () => {
 
     // All actions object
     const actionsObject = {
-        up: new Action('up', [87, 38], false, enableUpBtn),
-        down: new Action('down', [83, 40, 87], false, enableDownBtn),
-        left: new Action('left', [65, 37], false, enableLeftBtn),
-        right: new Action('right', [68, 39], false, enableRightBtn)
+        up: new Action('up', [87, 38], [4], false, enableUpBtn),
+        down: new Action('down', [83, 40], [3], false, enableDownBtn),
+        left: new Action('left', [65, 37], [0],false,  enableLeftBtn),
+        right: new Action('right', [68, 39], [2], false, enableRightBtn)
     }
 
     // Bounce Action object
-    const bounceActionObject = { bounce: new Action('bounce', [32], false, enableBounceBtn) }
+    const bounceActionObject = { bounce: new Action('bounce', [32], [1], false, enableBounceBtn) }
 
     // actions array
-    const allActionsArr = [...Object.entries(actionsObject), ...Object.entries(bounceActionObject)]
+    const mainActionArr = Object.entries(actionsObject)
+    const bounceActionArr = Object.entries(bounceActionObject)
+    const allActionsArr = [...mainActionArr, ...bounceActionArr]
 
     // Testing
 
@@ -95,6 +107,15 @@ const controllerLogic = () => {
         })
     }
 
+    // add/remove plugins
+    addKeyboardPluginBtn.addEventListener('click', () => {
+        controller.registerPlugin({ type: 'keyboard', plugin: new KeyboardPlugin(controller) })
+    })
+    removeKeyboardPluginBtn.addEventListener('click', () => controller.removePlugin('keyboard'))
+    addMousePluginBtn.addEventListener('click', () => {
+        controller.registerPlugin({ type: 'mouse', plugin: new MousePlugin(controller) })
+    })
+    removeMousePluginBtn.addEventListener('click', () => controller.removePlugin('mouse'))
     // enable / disable controller
     enableBtn.addEventListener('click', controller.enableController.bind(controller))
     disableBtn.addEventListener('click', controller.disableController.bind(controller))
@@ -116,34 +137,33 @@ const controllerLogic = () => {
     enabledAttachObj.setEnabled()
     enabledAttachObj.btns.dontEnabledBtn.addEventListener('click', enabledAttachObj.setEnabled.bind(enabledAttachObj))
 
-    const actionDeactivatedEvent = e => console.log(e.detail.actions)
+    const actionDeactivatedEvent = e => { console.log(e.detail.actions) }
 
     enabledAttachObj.btns.attachBtn.addEventListener('click', () => {
-        if (controller.$target !== window) {
-            controller.attach(window, enabledAttachObj.enabled)
+        controller.attach(window, enabledAttachObj.enabled)
 
-            window.addEventListener(controller.ACTION_ACTIVATED, moveReducer)
-            window.addEventListener(controller.ACTION_DEACTIVATED, actionDeactivatedEvent)
-        }
+        window.addEventListener(controller.ACTION_ACTIVATED, moveReducer)
+        window.addEventListener(controller.ACTION_DEACTIVATED, actionDeactivatedEvent)
     })
 
     enabledAttachObj.btns.detachBtn.addEventListener('click', () => {
-        if (controller.$target === window) {
-            controller.detach()
+        controller.detach()
 
-            window.removeEventListener(controller.ACTION_ACTIVATED, moveReducer)
-            window.removeEventListener(controller.ACTION_DEACTIVATED, actionDeactivatedEvent)
-        }
+        window.removeEventListener(controller.ACTION_ACTIVATED, moveReducer)
+        window.removeEventListener(controller.ACTION_DEACTIVATED, actionDeactivatedEvent)
     })
 
 
     // add action logic
     addActionsBtn.addEventListener('click', () => {
-        const actions = allActionsArr.reduce((acc, action) => ({ ...acc, ...action[1].getControllerAction() }), {})
+        const actions = mainActionArr.reduce((acc, action) => ({ ...acc, ...action[1].getControllerAction() }), {})
         controller.bindActions(actions)
+
     })
     addBounceBtn.addEventListener('click', () => {
-        controller.bindActions(bounceActionObject.bounce.getControllerAction())
+        const actions = bounceActionArr.reduce((acc, action) => ({ ...acc, ...action[1].getControllerAction() }), {})
+        controller.bindActions(actions)
+
     })
 
     // enable/disable actions
@@ -160,6 +180,7 @@ const controllerLogic = () => {
             actionsObject[actionName].setEnabled(shouldAction.enabled)
             :
             bounceActionObject[actionName].setEnabled(shouldAction.enabled)
+
     }
 
     allActionsArr.forEach(action => {
@@ -174,11 +195,6 @@ const controllerLogic = () => {
     //     console.log('Идет ли экшн up:', controller.isActionActive('up'))
     //     requestAnimationFrame(updateAction)
     // }; updateAction()
-    //
-    // const updateKey = () => {
-    //     console.log('Нажата ли кнопка 87(W):', controller.isKeyPressed(87))
-    //     requestAnimationFrame(updateKey)
-    // }; updateKey()
 }
 
 controllerLogic()
