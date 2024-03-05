@@ -170,15 +170,15 @@ const controllerLogic = () => {
     })
 
     // Testing
-    const updateAction = () => {
-        console.log('Идет ли экшн up:', controller.isActionActive('up'))
-        requestAnimationFrame(updateAction)
-    }; updateAction()
-
-    const updateKey = () => {
-        console.log('Нажата ли кнопка 87(W):', controller.isKeyPressed(87))
-        requestAnimationFrame(updateKey)
-    }; updateKey()
+    // const updateAction = () => {
+    //     console.log('Идет ли экшн up:', controller.isActionActive('up'))
+    //     requestAnimationFrame(updateAction)
+    // }; updateAction()
+    //
+    // const updateKey = () => {
+    //     console.log('Нажата ли кнопка 87(W):', controller.isKeyPressed(87))
+    //     requestAnimationFrame(updateKey)
+    // }; updateKey()
 }
 
 controllerLogic()

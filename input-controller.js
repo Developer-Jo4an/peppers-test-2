@@ -20,6 +20,7 @@ export class InputController {
         this.keyUpHandler = this.keyUpHandler.bind(this)
         this.focusOnHandler = this.focusOnHandler.bind(this)
         this.focusOffHandler = this.focusOffHandler.bind(this)
+
         this.actions = actionsToBind
         this.$target = target
     }
@@ -37,7 +38,8 @@ export class InputController {
     isPossibleActions(keyCode) {
         const actionsArray = Object.entries(this.actions)
 
-        const shouldActions = actionsArray.reduce(( acc, [actionName, { keys }] ) => keys.includes(keyCode) && this.actions[actionName].enabled ? [ ...acc, actionName ] : acc, [])
+        const shouldActions = actionsArray.reduce(
+            ( acc, [actionName, { keys }] ) => keys.includes(keyCode) && this.actions[actionName].enabled ? [ ...acc, actionName ] : acc, [])
 
         if (
             this.enabled &&
@@ -81,8 +83,7 @@ export class InputController {
         if (!triggeredActions) return
 
         if (customEventName === this.ACTION_ACTIVATED) {
-            const newActivatedActions = []
-            triggeredActions.forEach(actionName => !this.isActionActive(actionName) ? newActivatedActions.push(actionName) : null)
+            const newActivatedActions = triggeredActions.reduce((acc, actionName) => !this.isActionActive(actionName) ? [...acc, actionName] : acc, [])
 
             if (newActivatedActions.length) {
                 this.activeActions = [...this.activeActions, ...newActivatedActions]
@@ -140,5 +141,5 @@ export class InputController {
 
     isActionActive(actionName) { return this.activeActions.includes(actionName) }
 
-    isKeyPressed(keyCode) { return  this.activeKeys.includes(keyCode) }
+    isKeyPressed(keyCode) { return this.activeKeys.includes(keyCode) }
 }
